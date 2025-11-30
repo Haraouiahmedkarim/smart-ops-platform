@@ -205,6 +205,83 @@ export type Database = {
         }
         Relationships: []
       }
+      robot_events: {
+        Row: {
+          created_at: string
+          description: string
+          event_type: Database["public"]["Enums"]["robot_event_type"]
+          id: string
+          robot_id: string
+          sensor_data: Json | null
+          severity: Database["public"]["Enums"]["alert_severity"]
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          event_type: Database["public"]["Enums"]["robot_event_type"]
+          id?: string
+          robot_id: string
+          sensor_data?: Json | null
+          severity?: Database["public"]["Enums"]["alert_severity"]
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          event_type?: Database["public"]["Enums"]["robot_event_type"]
+          id?: string
+          robot_id?: string
+          sensor_data?: Json | null
+          severity?: Database["public"]["Enums"]["alert_severity"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "robot_events_robot_id_fkey"
+            columns: ["robot_id"]
+            isOneToOne: false
+            referencedRelation: "robots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      robots: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          last_connection: string | null
+          location: string | null
+          model: string | null
+          name: string
+          status: Database["public"]["Enums"]["robot_status"]
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_connection?: string | null
+          location?: string | null
+          model?: string | null
+          name: string
+          status?: Database["public"]["Enums"]["robot_status"]
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_connection?: string | null
+          location?: string | null
+          model?: string | null
+          name?: string
+          status?: Database["public"]["Enums"]["robot_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sensor_data: {
         Row: {
           equipment_id: string
@@ -396,6 +473,15 @@ export type Database = {
         | "preventive"
         | "corrective"
         | "inspection"
+      robot_event_type:
+        | "overheat"
+        | "vibration_spike"
+        | "current_anomaly"
+        | "connection_lost"
+        | "battery_low"
+        | "position_error"
+        | "sensor_failure"
+      robot_status: "operational" | "alert" | "offline" | "maintenance"
       work_order_priority: "low" | "medium" | "high" | "critical"
       work_order_status: "pending" | "in_progress" | "completed" | "cancelled"
     }
@@ -534,6 +620,16 @@ export const Constants = {
         "corrective",
         "inspection",
       ],
+      robot_event_type: [
+        "overheat",
+        "vibration_spike",
+        "current_anomaly",
+        "connection_lost",
+        "battery_low",
+        "position_error",
+        "sensor_failure",
+      ],
+      robot_status: ["operational", "alert", "offline", "maintenance"],
       work_order_priority: ["low", "medium", "high", "critical"],
       work_order_status: ["pending", "in_progress", "completed", "cancelled"],
     },
