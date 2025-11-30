@@ -12,6 +12,9 @@ import {
   Factory,
   BarChart3,
   Wrench,
+  Bot,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -19,6 +22,9 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NavLink } from "@/components/NavLink";
 import { toast } from "sonner";
+import { useTheme } from "@/contexts/ThemeContext";
+import { GlobalSearch } from "@/components/GlobalSearch";
+import { useRobotNotifications } from "@/hooks/useRobotNotifications";
 
 interface LayoutProps {
   children: ReactNode;
@@ -27,9 +33,12 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<any>(null);
+  
+  useRobotNotifications();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -85,6 +94,7 @@ const Layout = ({ children }: LayoutProps) => {
 
   const navigation = [
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
+    { name: "Robots", href: "/robots", icon: Bot },
     { name: "Equipment", href: "/equipment", icon: Package },
     { name: "Work Orders", href: "/work-orders", icon: ClipboardList },
     { name: "Maintenance", href: "/maintenance", icon: Wrench },
@@ -106,6 +116,9 @@ const Layout = ({ children }: LayoutProps) => {
               <h1 className="font-semibold text-lg">Maintenance 4.0</h1>
               <p className="text-xs text-muted-foreground">Industrial Platform</p>
             </div>
+          </div>
+          <div className="mt-3">
+            <GlobalSearch />
           </div>
         </div>
 
@@ -136,6 +149,17 @@ const Layout = ({ children }: LayoutProps) => {
         <Separator />
 
         <div className="p-4 space-y-4">
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={toggleTheme}
+              variant="outline"
+              size="sm"
+              className="flex-1"
+            >
+              {theme === 'light' ? <Moon className="w-4 h-4 mr-2" /> : <Sun className="w-4 h-4 mr-2" />}
+              {theme === 'light' ? 'Dark' : 'Light'}
+            </Button>
+          </div>
           <div className="flex items-center gap-3">
             <Avatar>
               <AvatarImage src={profile?.avatar_url} />
