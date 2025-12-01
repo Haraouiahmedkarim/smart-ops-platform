@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
+import MES from "./pages/MES";
 import Equipment from "./pages/Equipment";
 import WorkOrders from "./pages/WorkOrders";
 import Maintenance from "./pages/Maintenance";
@@ -28,6 +29,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/mes" element={<MES />} />
             <Route path="/robots" element={<Robots />} />
             <Route path="/robots/:id" element={<RobotDetail />} />
             <Route path="/equipment" element={<Equipment />} />

@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import MetricCard from "@/components/dashboard/MetricCard";
 import EquipmentStatus from "@/components/dashboard/EquipmentStatus";
 import RecentAlerts from "@/components/dashboard/RecentAlerts";
+import FMSMap from "@/components/FMSMap";
 import {
   Activity,
   AlertTriangle,
@@ -241,6 +242,9 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* FMS Production Layout */}
+        <FMSMap />
 
         {/* Equipment Status and Alerts */}
         <div className="grid gap-6 md:grid-cols-2">

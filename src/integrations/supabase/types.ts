@@ -118,6 +118,81 @@ export type Database = {
         }
         Relationships: []
       }
+      fms_routes: {
+        Row: {
+          created_at: string
+          estimated_time: number | null
+          id: string
+          is_active: boolean
+          product_type: string
+          route_name: string
+          routing_efficiency: number | null
+          station_sequence: string[]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          estimated_time?: number | null
+          id?: string
+          is_active?: boolean
+          product_type: string
+          route_name: string
+          routing_efficiency?: number | null
+          station_sequence: string[]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          estimated_time?: number | null
+          id?: string
+          is_active?: boolean
+          product_type?: string
+          route_name?: string
+          routing_efficiency?: number | null
+          station_sequence?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      fms_stations: {
+        Row: {
+          capacity: number
+          created_at: string
+          current_product: string | null
+          id: string
+          location_x: number
+          location_y: number
+          name: string
+          station_code: string
+          status: Database["public"]["Enums"]["fms_station_status"]
+          updated_at: string
+        }
+        Insert: {
+          capacity?: number
+          created_at?: string
+          current_product?: string | null
+          id?: string
+          location_x: number
+          location_y: number
+          name: string
+          station_code: string
+          status?: Database["public"]["Enums"]["fms_station_status"]
+          updated_at?: string
+        }
+        Update: {
+          capacity?: number
+          created_at?: string
+          current_product?: string | null
+          id?: string
+          location_x?: number
+          location_y?: number
+          name?: string
+          station_code?: string
+          status?: Database["public"]["Enums"]["fms_station_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       maintenance_logs: {
         Row: {
           cost: number | null
@@ -171,6 +246,116 @@ export type Database = {
             columns: ["work_order_id"]
             isOneToOne: false
             referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      operator_actions: {
+        Row: {
+          action_type: Database["public"]["Enums"]["operator_action_type"]
+          id: string
+          notes: string | null
+          operator_id: string
+          production_order_id: string
+          timestamp: string
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["operator_action_type"]
+          id?: string
+          notes?: string | null
+          operator_id: string
+          production_order_id: string
+          timestamp?: string
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["operator_action_type"]
+          id?: string
+          notes?: string | null
+          operator_id?: string
+          production_order_id?: string
+          timestamp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operator_actions_production_order_id_fkey"
+            columns: ["production_order_id"]
+            isOneToOne: false
+            referencedRelation: "production_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      production_orders: {
+        Row: {
+          availability: number | null
+          completed_at: string | null
+          completed_quantity: number
+          created_at: string
+          equipment_id: string | null
+          id: string
+          oee_score: number | null
+          order_number: string
+          performance: number | null
+          product_name: string
+          quality: number | null
+          quantity: number
+          robot_id: string | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["production_order_status"]
+          target_completion: string | null
+          updated_at: string
+        }
+        Insert: {
+          availability?: number | null
+          completed_at?: string | null
+          completed_quantity?: number
+          created_at?: string
+          equipment_id?: string | null
+          id?: string
+          oee_score?: number | null
+          order_number: string
+          performance?: number | null
+          product_name: string
+          quality?: number | null
+          quantity: number
+          robot_id?: string | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["production_order_status"]
+          target_completion?: string | null
+          updated_at?: string
+        }
+        Update: {
+          availability?: number | null
+          completed_at?: string | null
+          completed_quantity?: number
+          created_at?: string
+          equipment_id?: string | null
+          id?: string
+          oee_score?: number | null
+          order_number?: string
+          performance?: number | null
+          product_name?: string
+          quality?: number | null
+          quantity?: number
+          robot_id?: string | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["production_order_status"]
+          target_completion?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "production_orders_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_orders_robot_id_fkey"
+            columns: ["robot_id"]
+            isOneToOne: false
+            referencedRelation: "robots"
             referencedColumns: ["id"]
           },
         ]
@@ -468,11 +653,30 @@ export type Database = {
       alert_severity: "info" | "warning" | "error" | "critical"
       app_role: "admin" | "technician" | "operator"
       equipment_status: "operational" | "maintenance" | "down" | "standby"
+      fms_station_status:
+        | "running"
+        | "idle"
+        | "maintenance"
+        | "waiting"
+        | "stopped"
       maintenance_type:
         | "predictive"
         | "preventive"
         | "corrective"
         | "inspection"
+      operator_action_type:
+        | "start"
+        | "stop"
+        | "pause"
+        | "resume"
+        | "reset"
+        | "quality_check"
+      production_order_status:
+        | "pending"
+        | "in_progress"
+        | "completed"
+        | "paused"
+        | "cancelled"
       robot_event_type:
         | "overheat"
         | "vibration_spike"
@@ -614,11 +818,33 @@ export const Constants = {
       alert_severity: ["info", "warning", "error", "critical"],
       app_role: ["admin", "technician", "operator"],
       equipment_status: ["operational", "maintenance", "down", "standby"],
+      fms_station_status: [
+        "running",
+        "idle",
+        "maintenance",
+        "waiting",
+        "stopped",
+      ],
       maintenance_type: [
         "predictive",
         "preventive",
         "corrective",
         "inspection",
+      ],
+      operator_action_type: [
+        "start",
+        "stop",
+        "pause",
+        "resume",
+        "reset",
+        "quality_check",
+      ],
+      production_order_status: [
+        "pending",
+        "in_progress",
+        "completed",
+        "paused",
+        "cancelled",
       ],
       robot_event_type: [
         "overheat",
