@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
+import Sparkline from "@/components/Sparkline";
 
 interface MetricCardProps {
   title: string;
@@ -10,11 +11,12 @@ interface MetricCardProps {
     value: number;
     isPositive: boolean;
   };
+  sparklineData?: number[];
 }
 
-const MetricCard = ({ title, value, icon: Icon, description, trend }: MetricCardProps) => {
+const MetricCard = ({ title, value, icon: Icon, description, trend, sparklineData }: MetricCardProps) => {
   return (
-    <Card>
+    <Card className="card-elevated animate-scale-in">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
@@ -22,7 +24,12 @@ const MetricCard = ({ title, value, icon: Icon, description, trend }: MetricCard
         <Icon className="h-5 w-5 text-muted-foreground" />
       </CardHeader>
       <CardContent>
-        <div className="text-3xl font-bold">{value}</div>
+        <div className="flex items-end justify-between">
+          <div className="text-3xl font-bold">{value}</div>
+          {sparklineData && sparklineData.length > 0 && (
+            <Sparkline data={sparklineData} width={60} height={20} />
+          )}
+        </div>
         {description && (
           <p className="text-xs text-muted-foreground mt-1">{description}</p>
         )}
